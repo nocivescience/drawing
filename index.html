@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,100&display=swap');
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Roboto', sans-serif;
+        }
+        #canvas {
+            border: 1px solid #d3d3d3;
+            border-radius: 5px;
+        }
+        #toobox{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #subtoolbox{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            width: 25vw;
+        }
+        @media screen and (max-width: 768px) {
+            #subtoolbox{
+                width: 50vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <div id="toobox">
+        <div id="subtoolbox">
+            <button id="descrease">-</button>
+            <span id="size"></span>
+            <button id="increase">+</button>
+            <input type="color" name="" id="color">
+            <div id="clear">Clear</div>
+        </div>
+    </div>
+</body>
+<script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    const decreaseElement = document.getElementById("descrease");
+    const increaseElement = document.getElementById("increase");
+    const sizeElement = document.getElementById("size");
+    const clearElement = document.getElementById("clear");
+    const colorElement = document.getElementById("color");
+    var size=30;
+    var color="black";
+    var x=undefined;
+    var y=undefined;
+    var isPressed = false;
+    sizeElement.innerHTML=size;
+    canvas.addEventListener("mousedown", function(e) {
+        isPressed = true;
+        x = e.offsetX;
+        y = e.offsetY;
+    });
+    canvas.addEventListener("mouseup", function(e) {
+        isPressed = false;
+        x = undefined;
+        y = undefined;
+    });
+    canvas.addEventListener("mousemove", function(e) {
+        if (isPressed) {
+            const x2 = e.offsetX;
+            const y2 = e.offsetY;
+            drawCircle(x2, y2);
+            drawLine(x, y, x2, y2);
+            x = x2;
+            y = y2;
+        }
+    });
+    function drawCircle(x, y) {
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, 2 * Math.PI);
+        ctx.fillStyle = color;  
+        ctx.fill();
+        ctx.closePath();
+    }
+    function drawLine(x1, y1, x2, y2) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.stroke();
+        ctx.closePath();
+    }
+    increaseElement.addEventListener("click", function() {
+        size++;
+        if (size > 60) {size = 60;}
+        sizeElement.innerHTML = size;
+    });
+    decreaseElement.addEventListener("click", function() {
+        size--;
+        if (size < 1) {size = 1;}
+        sizeElement.innerHTML = size;
+    });
+    colorElement.addEventListener("change", (e) => {
+        color = e.target.value;
+    });
+    clearElement.addEventListener("click", function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+</script>
+</html>
